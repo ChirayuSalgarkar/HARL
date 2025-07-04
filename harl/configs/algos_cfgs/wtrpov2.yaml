@@ -106,6 +106,12 @@ algo:
   huber_delta: 10.0
   # kl threshold in HATRPO update
   kl_threshold: 0.01
+  #wasserstein threshold
+  w_threshold: 0.01
+  #C hyperparameter
+  C: 0.1
+  #epsilon hyperparameter
+  epsilon: 0.001
   # line search steps
   ls_step: 10
   # accept ratio in HATRPO update

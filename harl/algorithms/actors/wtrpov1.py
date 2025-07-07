@@ -11,6 +11,15 @@ from harl.utils.trpo_util import (
     update_model,
     kl_divergence,
 )
+from harl.utils.wtrpov1_util import ((
+    flat_grad,
+    flat_params,
+    conjugate_gradient,
+    fisher_vector_product,
+    update_model,
+    kl_divergence,
+)
+
 from harl.algorithms.actors.on_policy_base import OnPolicyBase
 from harl.models.policy_models.stochastic_policy import StochasticPolicy
 

@@ -156,3 +156,62 @@ def fisher_vector_product(
         )
         kl_hessian_p = flat_hessian(kl_hessian_p)
         return kl_hessian_p + 0.1 * p
+
+# --- New methods required for W-MATRPO ---
+def wasserstein_distance_1d(
+    policy1_state, policy2_state, obs_batch, rnn_states_batch, masks_batch
+):
+    """
+    Calculates the 1-Wasserstein distance between two policies.
+    For 1D Gaussian distributions, W1 = |mu1 - mu2| + |sigma1 - sigma2|.
+    This will need to be adapted for multivariate Gaussians.
+
+    Args:
+        policy1_state: (dict) State dictionary of the first policy.
+        policy2_state: (dict) State dictionary of the second policy.
+        obs_batch: (torch.Tensor) Batch of observations for generating distributions.
+        rnn_states_batch: (torch.Tensor) Batch of recurrent states.
+        masks_batch: (torch.Tensor) Batch of masks.
+
+    Returns:
+        (torch.Tensor): The 1-Wasserstein distance.
+    """
+    # TODO:
+    # 1. Create two temporary StochasticPolicy models.
+    # 2. Load the state_dicts into the models.
+    # 3. Pass the data batch through both models to get their action distributions.
+    # 4. Calculate and return the 1-Wasserstein distance between the distributions.
+    #    This will likely require accessing the .mean and .stddev of the distributions.
+    pass
+
+
+def calculate_adaptive_trust_region(
+    other_agents_policy_histories, c_const, eps, obs_batch, rnn_states_batch, masks_batch
+):
+    """
+    Calculates the adaptive trust region delta for the current agent based on the
+    policy changes of the other agents.
+
+    Args:
+        other_agents_policy_histories: (list of deques) A list where each element
+                                       is a deque containing the last 2 policy
+                                       state_dicts for one of the other agents.
+        c_const: (float) The 'C' constant from the algorithm.
+        eps: (float) A small epsilon for numerical stability.
+        obs_batch: (torch.Tensor) Batch of observations.
+        rnn_states_batch: (torch.Tensor) Batch of recurrent states.
+        masks_batch: (torch.Tensor) Batch of masks.
+
+    Returns:
+        (float): The calculated adaptive trust region delta.
+    """
+    # TODO:
+    # 1. Initialize a denominator sum to zero.
+    # 2. Iterate through each of the other agents' policy histories.
+    # 3. For each other agent, get their policy at step k-1 and k-2.
+    # 4. Calculate the W1 distance between these two historical policies using
+    #    the wasserstein_distance_1d function.
+    # 5. Add this distance to the denominator sum.
+    # 6. Calculate delta = c_const / (denominator_sum + eps).
+    # 7. Return delta.
+    pass

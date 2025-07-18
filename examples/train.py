@@ -14,6 +14,7 @@ def main():
         type=str,
         default="happo",
         choices=[
+            "adaptivehatrpo",
             "happo",
             "hatrpo",
             "haa2c",
@@ -25,7 +26,7 @@ def main():
             "matd3",
             "mappo",
             "wtrpov1",
-            "wtrpov2".
+            "wtrpov2",
         ],
         help="Algorithm name. Choose from: happo, hatrpo, haa2c, haddpg, hatd3, hasac, had3qn, maddpg, matd3, mappo, wtrpov1, wtrpov2.",
     )

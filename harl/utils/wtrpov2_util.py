@@ -159,30 +159,48 @@ def fisher_vector_product(
 
 # --- New methods required for W-MATRPO ---
 def wasserstein_distance_1d(
-    policy1_state, policy2_state, obs_batch, rnn_states_batch, masks_batch
+        policy1_state,
+        policy2_state,
+        obs_batch,
+        rnn_states_batch,
+        masks_batch,
+        # Additional args needed to instantiate actor models
+        actor_args=None,
+        obs_space=None,
+        act_space=None,
+        device=torch.device("cpu")
 ):
     """
-    Calculates the 1-Wasserstein distance between two policies.
-    For 1D Gaussian distributions, W1 = |mu1 - mu2| + |sigma1 - sigma2|.
-    This will need to be adapted for multivariate Gaussians.
-
-    Args:
-        policy1_state: (dict) State dictionary of the first policy.
-        policy2_state: (dict) State dictionary of the second policy.
-        obs_batch: (torch.Tensor) Batch of observations for generating distributions.
-        rnn_states_batch: (torch.Tensor) Batch of recurrent states.
-        masks_batch: (torch.Tensor) Batch of masks.
-
-    Returns:
-        (torch.Tensor): The 1-Wasserstein distance.
+    Calculates the 1-Wasserstein distance between two policies for 1D Gaussian distributions.
     """
-    # TODO:
-    # 1. Create two temporary StochasticPolicy models.
+    # --- Input Validation ---
+    # Check if the necessary arguments for creating actor models are provided.
+    if actor_args is None or obs_space is None or act_space is None:
+        raise ValueError("actor_args, obs_space, and act_space must be provided to instantiate actor models.")
+
+    # 1. Create two temporary StochasticPolicy models (Actors).
+    policy1 = Actor(actor_args, obs_space, act_space, device)
+    policy2 = Actor(actor_args, obs_space, act_space, device)
+
     # 2. Load the state_dicts into the models.
-    # 3. Pass the data batch through both models to get their action distributions.
-    # 4. Calculate and return the 1-Wasserstein distance between the distributions.
-    #    This will likely require accessing the .mean and .stddev of the distributions.
-    pass
+    policy1.load_state_dict(policy1_state)
+    policy2.load_state_dict(policy2_state)
+
+    # Set to evaluation mode
+    policy1.eval()
+    policy2.eval()
+
+    with torch.no_grad():
+        # 3. Pass the data batch through both models to get their action distributions.
+        _, _, dist1 = policy1.evaluate_actions(obs_batch, rnn_states_batch, None, masks_batch, None, None)
+        _, _, dist2 = policy2.evaluate_actions(obs_batch, rnn_states_batch, None, masks_batch, None, None)
+
+        # 4. Calculate and return the 1-Wasserstein distance between the distributions.
+        mu1, sigma1 = dist1.loc, dist1.scale
+        mu2, sigma2 = dist2.loc, dist2.scale
+        w1_distance = torch.abs(mu1 - mu2) + torch.abs(sigma1 - sigma2)
+
+        return w1_distance.mean()
 
 
 def calculate_adaptive_trust_region(

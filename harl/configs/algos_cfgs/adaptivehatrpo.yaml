@@ -1,0 +1,25 @@
+# Configuration for the Adaptive HATRPO algorithm.
+# Inherits from hatrpo.yaml and adds new parameters.
+
+# Name of the algorithm
+algo_name: "adaptivehatrpo"
+
+# --- Inherit from HATRPO defaults ---
+# (You can copy the contents of hatrpo.yaml here)
+kl_threshold: 0.01
+ls_step: 10
+accept_ratio: 0.5
+backtrack_coeff: 0.5
+# ... other HATRPO parameters
+
+# --- New parameters for AdaptiveHATRPO ---
+# Documentation of the new knobs for your algorithm.
+
+# Whether to use the adaptive KL-divergence mechanism.
+use_adaptive_kl: True
+
+# The 'C' constant in the adaptive radius formula.
+adaptive_kl_C: 1.0
+
+# The epsilon value to prevent division by zero in the formula.
+adaptive_kl_epsilon: 1e-8
